@@ -13,7 +13,7 @@ RGMolSA should currently be considered a beta version under development. This in
 - [RDKit](https://www.rdkit.org/docs/Install.html)
 
 #### Downloading the Software
-
+Run the following in the terminal from the directory the software is to be cloned to:
 ```
 git clone https://github.com/RPirie96/RGMolSA.git
 ```
