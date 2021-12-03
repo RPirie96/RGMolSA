@@ -20,7 +20,7 @@ git clone https://github.com/RPirie96/RGMolSA.git
 
 ## Running RGMolSA
 
-The Jupyter Notebook "run_RGMolSA" can be used to run the code for the examples provided in the paper. Note that you'll need to change the paths specified in the 1st cell to the directory the python scripts and data have been cloned to for the notebook to run.
+The Jupyter Notebook "run_RGMolSA.ipynb" can be used to run the code for the examples provided in the paper. Note that you'll need to change the paths specified in the 1st cell to the directory the python scripts and data have been cloned to for the notebook to run.
 
 #### Data Supplied
 - SVT.sdf: structure data file containing a single conformer for each of Sildenafil, Vardenafil and Tadalafil.
