@@ -44,7 +44,7 @@ def get_descriptor(mol):
     e_val, w = la.eig(c_mat)
     e_val = sorted(e_val)
 
-    e_val[0] = mol_area.area  # change 1st eigenvalue from 0 to area to account for re-scale
+    e_val[0] = 10000 / mol_area.area  # change 1st eigenvalue from 0 to area to account for re-scale
 
     e_val = [round(num, 3) for num in e_val]
 

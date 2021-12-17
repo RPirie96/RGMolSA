@@ -125,23 +125,40 @@ def get_a_mat(no_atoms, sgp, error):
         yzz_val = y_val - xxy_val - yyy_val
 
         # degree 4
+        if c > 10 ** (-9) and b > 10 ** (-9):
+            xxxx_val = utils.xxxx_integral(a, b, c, radius)
+            yyyy_val = utils.xxxx_integral(1j * a, b, c, radius)
+            zzzz_val = utils.zzzz_integral(a, b, c, radius)
+            xxzz_val = utils.xxzz_integral(a, b, c, radius)
+            yyzz_val = utils.xxzz_integral(1j * a, b, c, radius)
+            xxyy_val = xx_val - xxxx_val - xxzz_val
 
-        xxxx_val = utils.xxxx_integral(a, b, c, radius)
-        yyyy_val = utils.xxxx_integral(1j * a, b, c, radius)
-        zzzz_val = utils.zzzz_integral(a, b, c, radius)
-        xxzz_val = utils.xxzz_integral(a, b, c, radius)
-        yyzz_val = utils.xxzz_integral(1j * a, b, c, radius)
-        xxyy_val = xx_val - xxxx_val - xxzz_val
+            xzzz_val = utils.xzzz_integral(a, b, c, radius)  #
+            yzzz_val = -utils.xzzz_integral(1j * a, b, c, radius)  #
+            xxxz_val = utils.xxxz_integral(a, b, c, radius)
+            yyyz_val = -utils.xxxz_integral(1j * a, b, c, radius)  # Check this - possible error
+            xyyz_val = xz_val - xxxz_val - xzzz_val
+            xxyz_val = yz_val - yyyz_val - yzzz_val
+            xxxy_val = utils.xxxy_integral(a, b, c, radius)
+            xyyy_val = -utils.xxxy_integral(1j * a, b, c, radius)
+            xyzz_val = xy_val - xxxy_val - xyyy_val
+        else:
+            xxxx_val = 0
+            yyyy_val = 0
+            zzzz_val = v_val
+            xxzz_val = 0
+            yyzz_val = 0
+            xxyy_val = xx_val - xxxx_val - xxzz_val
 
-        xzzz_val = utils.xzzz_integral(a, b, c, radius)  #
-        yzzz_val = -utils.xzzz_integral(1j * a, b, c, radius)  #
-        xxxz_val = utils.xxxz_integral(a, b, c, radius)
-        yyyz_val = -utils.xxxz_integral(1j * a, b, c, radius)  # Check this - possible error
-        xyyz_val = xz_val - xxxz_val - xzzz_val
-        xxyz_val = yz_val - yyyz_val - yzzz_val
-        xxxy_val = utils.xxxy_integral(a, b, c, radius)
-        xyyy_val = -utils.xxxy_integral(1j * a, b, c, radius)
-        xyzz_val = xy_val - xxxy_val - xyyy_val
+            xzzz_val = 0
+            yzzz_val = 0
+            xxxz_val = 0
+            yyyz_val = 0
+            xyyz_val = xz_val - xxxz_val - xzzz_val
+            xxyz_val = yz_val - yyyz_val - yzzz_val
+            xxxy_val = 0
+            xyyy_val = 0
+            xyzz_val = xy_val - xxxy_val - xyyy_val
 
         # quartic quantities to compute the a_matrix restricted t the quadratic spherical harmonics
 
@@ -692,23 +709,40 @@ def get_a_mat(no_atoms, sgp, error):
             yzz_val = y_val - xxy_val - yyy_val
 
             # degree 4
+            if c > 10 ** (-9) and b > 10 ** (-9):
+                xxxx_val = utils.xxxx_integral(a, b, c, radius)
+                yyyy_val = utils.xxxx_integral(1j * a, b, c, radius)
+                zzzz_val = utils.zzzz_integral(a, b, c, radius)
+                xxzz_val = utils.xxzz_integral(a, b, c, radius)
+                yyzz_val = utils.xxzz_integral(1j * a, b, c, radius)
+                xxyy_val = xx_val - xxxx_val - xxzz_val
 
-            xxxx_val = utils.xxxx_integral(a, b, c, radius)
-            yyyy_val = utils.xxxx_integral(1j * a, b, c, radius)
-            zzzz_val = utils.zzzz_integral(a, b, c, radius)
-            xxzz_val = utils.xxzz_integral(a, b, c, radius)
-            yyzz_val = utils.xxzz_integral(1j * a, b, c, radius)
-            xxyy_val = xx_val - xxxx_val - xxzz_val
+                xzzz_val = utils.xzzz_integral(a, b, c, radius)  #
+                yzzz_val = -utils.xzzz_integral(1j * a, b, c, radius)  #
+                xxxz_val = utils.xxxz_integral(a, b, c, radius)
+                yyyz_val = -utils.xxxz_integral(1j * a, b, c, radius)  # Check this - possible error
+                xyyz_val = xz_val - xxxz_val - xzzz_val
+                xxyz_val = yz_val - yyyz_val - yzzz_val
+                xxxy_val = utils.xxxy_integral(a, b, c, radius)
+                xyyy_val = -utils.xxxy_integral(1j * a, b, c, radius)
+                xyzz_val = xy_val - xxxy_val - xyyy_val
+            else:
+                xxxx_val = 0
+                yyyy_val = 0
+                zzzz_val = v_val
+                xxzz_val = 0
+                yyzz_val = 0
+                xxyy_val = xx_val - xxxx_val - xxzz_val
 
-            xzzz_val = utils.xzzz_integral(a, b, c, radius)  #
-            yzzz_val = -utils.xzzz_integral(1j * a, b, c, radius)  #
-            xxxz_val = utils.xxxz_integral(a, b, c, radius)
-            yyyz_val = -utils.xxxz_integral(1j * a, b, c, radius)  # Check this - possible error
-            xyyz_val = xz_val - xxxz_val - xzzz_val
-            xxyz_val = yz_val - yyyz_val - yzzz_val
-            xxxy_val = utils.xxxy_integral(a, b, c, radius)
-            xyyy_val = -utils.xxxy_integral(1j * a, b, c, radius)
-            xyzz_val = xy_val - xxxy_val - xyyy_val
+                xzzz_val = 0
+                yzzz_val = 0
+                xxxz_val = 0
+                yyyz_val = 0
+                xyyz_val = xz_val - xxxz_val - xzzz_val
+                xxyz_val = yz_val - yyyz_val - yzzz_val
+                xxxy_val = 0
+                xyyy_val = 0
+                xyzz_val = xy_val - xxxy_val - xyyy_val
 
             # quartic quantities to compute the a_matrix restricted t the quadratic spherical harmonics
 
