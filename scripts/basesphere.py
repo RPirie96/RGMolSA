@@ -83,6 +83,11 @@ def get_area(adjacency_matrix, centres, no_atoms, radii):
         :param no_atoms:
         :param radii:
         :return lam, area:
+
+        If the area is negative (usually for bridged bicyclic compounds with >2 intersecting rings) a
+        ValueError is raised. As the area is computed as the area of a sphere - the bit where two spheres
+        intersect, multiple large spheres intersecting leads to a negative value, and thus the surface of the
+        molecule cannot be approximated.
     """
 
     # matrix of distances between intersecting atoms
@@ -105,6 +110,9 @@ def get_area(adjacency_matrix, centres, no_atoms, radii):
             if adjacency_matrix[i, j] == 1:
                 sphere_i = (sphere_i - 2 * radii[i] * math.pi * abs(radii[i] - lam[i, j]))
         area += sphere_i
+
+    if area < 0:
+        raise ValueError('Negative Surface Area, cannot approximate surface')
 
     mol_area = namedtuple('mol_area', ['lam', 'area'])
 
