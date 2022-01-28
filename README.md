@@ -2,6 +2,8 @@
 
 ## Introduction
 
+Ligand-based virtual screening aims to reduce the cost and duration of drug discovery campaigns. Shape similarity can be used to screen large databases, with the goal of predicting potential new hits by comparing to molecules with known favourable properties. RGMolSA is a new alignment-free and mesh-free surface-based molecular shape descriptor derived from the mathematical theory of Riemannian geometry. The treatment of a molecule as a series of intersecting spheres allows the description of its surface geometry using the _Riemannian metric_, obtained by considering the spectrum of the Laplacian. This gives a simple vector descriptor constructed of the weighted surface area and eight non-zero eigenvalues, which capture the surface shape. The full method is described [here](https://arxiv.org/abs/2201.04230).
+
 ## In Development
 
 RGMolSA should currently be considered a beta version under development. This initial sample runs for the supplied PDE5 inhibitor test sets (as discussed in the above paper), but is not guaranteed to work for all molecules.
