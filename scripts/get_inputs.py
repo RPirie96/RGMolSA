@@ -16,6 +16,20 @@ def get_mol_info(mol):
         :return adjacency_matrix, no_atoms, centres, radii:
     """
 
+    # check for 3D coords, try embed if not
+    if '3D' not in Chem.MolToMolBlock(mol).split("\n")[1]:  # check if coords are 3D, get conf if not
+        ps = AllChem.ETKDGv3()
+        ps.useRandomCoords = True  # use random coordinates to help with issue of failed embeddings
+        ps.maxAttempts = 1000  # ignore smoothing failures, should be sufficient in most cases
+
+        mol = Chem.AddHs(mol)
+        AllChem.EmbedMolecule(mol, ps)
+        mol = Chem.RemoveHs(mol)
+
+    # if embed still fails, raise TypeError
+    if '3D' not in Chem.MolToMolBlock(mol).split("\n")[1]:  # check that the above embed has worked
+        raise TypeError('RDKit cannot produce 3D coordinates for this molecule')
+
     # number of atoms in molecule
     no_atoms = mol.GetNumAtoms()
 
