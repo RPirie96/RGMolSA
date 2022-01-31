@@ -48,11 +48,17 @@ def get_m_rot(vector):  #
 # helper functions for performing piecewise stereographic projection
 # if we rotate (0,0,1) onto (v_1,v_2,v_3) this induces an element of PSU(2)  [[alpha, beta],[-conj(beta), alpha]]
 def alpha_coefficient(vector):  # alpha coefficient
-    return math.sqrt((1 + vector[2]) / 2)
+    if (vector[2] + 1) ** 2 > 10 ** (-9):
+        return math.sqrt((1 + vector[2]) / 2)
+    else:
+        return 0
 
 
 def beta_coefficient(vector):  # beta coefficient
-    return -math.sqrt(1 / (2 * (1 + vector[2]))) * complex(vector[0], vector[1])
+    if (vector[2] + 1) ** 2 > 10 ** (-9):
+        return -math.sqrt(1 / (2 * (1 + vector[2]))) * complex(vector[0], vector[1])
+    else:
+        return 1j
 
 
 def t_circle(alpha, beta, gamma, delta, c, r_rel):
