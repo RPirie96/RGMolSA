@@ -5,7 +5,7 @@ from scipy.spatial import distance_matrix
 from numpy import linalg as la
 from collections import namedtuple
 
-from utils import get_chain, get_m_rot
+from utils import get_chain
 
 
 def get_base_sphere(centres):
@@ -137,7 +137,7 @@ def rescale_inputs(area, centres, radii, lam):
     return rescaled(centres_r=centres_r, radii_r=radii_r, lam_r=lam_r)
 
 
-def base_error(levels, inputs, base, rescaled, area):
+def base_error(levels, inputs, base, rescaled):
     """
         Function to return the vector of next level spheres and the updated rescaled centres post-error handling
     """
@@ -151,7 +151,6 @@ def base_error(levels, inputs, base, rescaled, area):
     centres_r = rescaled.centres_r
     radii_r = rescaled.radii_r
     lam_r = rescaled.lam_r
-    centres = base.centres
 
     # Fingerprint Matrix that tells you how to navigate through molecule
     fingerprint = np.tile(-1, (no_levels + 1, no_atoms))
@@ -188,12 +187,19 @@ def base_error(levels, inputs, base, rescaled, area):
         check_sphere = next_level[base_sphere][i]
         if la.norm(centres_r[check_sphere] - radii_r[base_sphere] * np.array([0, 0, 1])) <= radii_r[check_sphere]:
             cover_sphere = check_sphere
-            fine = 1
+            fine = 1  # if there is something over the north pole
         i += 1
-    fine_2 = 0
 
-    while fine == 1 and fine_2 == 0:
-        unit_cover = (1 / la.norm(centres_r[check_sphere])) * centres_r[check_sphere]
+    fine_2 = 0
+    angle_x = 10
+    while angle_x <= math.pi and fine_2 == 0:
+
+        # define matrix to rotate about x and y
+        rot_mat_x = np.array(
+            [[1, 0, 0], [0, math.cos(angle_x), -math.sin(angle_x)], [0, math.sin(angle_x), math.cos(angle_x)]])
+        centres_r = np.matmul(centres_r, rot_mat_x)
+
+        unit_cover = (1 / la.norm(centres_r[cover_sphere])) * centres_r[cover_sphere]
         plane_point = (0.85 * lam_r[base_sphere][cover_sphere] * unit_cover)
         v_rand = np.random.rand(3)
         v_rand = v_rand / (la.norm(v_rand))
@@ -210,24 +216,8 @@ def base_error(levels, inputs, base, rescaled, area):
             check_sphere = next_level[base_sphere][i]
             if la.norm(centres_r[check_sphere] - test_point) <= radii_r[check_sphere]:
                 fine_2 = 0
-    if fine == 1 and fine_2 == 1:
-        mat = get_m_rot((1 / la.norm(test_point)) * test_point)
-    if fine == 0 and fine_2 == 0:
-        mat = np.identity(3)
-    mat = la.inv(mat)
 
-    # Randomise Coordinates
-    centres_2 = np.zeros((no_atoms, 3))
-
-    for n in range(0, no_atoms):
-        cent_vec = np.array([[centres[n][0]], [centres[n][1]], [centres[n][2]]])
-        cent_vec = (np.matmul(mat, cent_vec))
-
-        for i in range(0, 3):
-            centres_2[n][i] = cent_vec[i][0]
-
-    centres = centres_2
-    centres_r = centres * math.sqrt(4 * math.pi / area)
+        angle_x = angle_x + 10
 
     error = namedtuple('error', ['sphere_levels_vec', 'next_level', 'centres_r'])
 
