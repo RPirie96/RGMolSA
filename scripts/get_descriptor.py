@@ -28,7 +28,7 @@ def get_descriptor(mol):
     rescaled = rescale_inputs(mol_area.area, base.centres, inputs.radii, mol_area.lam)
 
     # error handling to account for cases where there is an atom over the north pole
-    error = base_error(levels, inputs, base, rescaled, mol_area.area)
+    error = base_error(levels, inputs, base, rescaled)
 
     # perform 'piecewise stereographic projection' to move molecule into CP^n
     stereo_proj = get_stereographic_projection(levels, inputs, rescaled, error.centres_r)
