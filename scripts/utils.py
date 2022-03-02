@@ -77,7 +77,7 @@ def t_circle(alpha, beta, gamma, delta, c, r_rel):
            ((abs(delta + (c * gamma)) ** 2) - (r_rel * abs(gamma)) ** 2)
     k = (((r_rel * abs(alpha)) ** 2) - (abs(beta + (c * alpha))) ** 2) / (
             (abs(delta + (c * gamma)) ** 2) - (r_rel * abs(gamma)) ** 2)
-    radius = math.sqrt(k + abs(cent) ** 2)
+    radius = math.sqrt(abs(k + abs(cent) ** 2))
 
     return [cent, radius]
 
