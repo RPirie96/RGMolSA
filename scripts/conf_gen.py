@@ -62,8 +62,7 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
     params.maxAttempts = 1000  # ignore smoothing failures, should be sufficient in most cases
     params.pruneRmsThresh = 0.1  # ignore any confs that are too similar
 
-    for i, _ in enumerate(mols):
-        mol = mols[i]
+    for i, mol in enumerate(mols):
         mol_id = ids[i]
 
         # add Hs to get better conformers
