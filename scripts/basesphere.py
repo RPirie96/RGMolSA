@@ -1,9 +1,21 @@
-# functions to obtain info surrounding the 'base-sphere'
+"""
+module to obtain info surrounding the 'base-sphere'
+
+Functions:
+- get_base_sphere: function to find the base sphere (centroid) of the molecule
+- get_levels: finds path through molecule from base sphere
+- get_area: finds surface area of the molecule\
+- rescale_inputs: rescale matrix constructs to have area equal to 4pi
+- base_error: error handling to rotate molecule away from having atom over north pole
+
+Exceptions:
+- ArithmeticError: raised when molecule has negative surface area (typically bridged bicyclics)
+"""
+
+from collections import namedtuple
 import numpy as np
-import math
 from scipy.spatial import distance_matrix
 from numpy import linalg as la
-from collections import namedtuple
 
 from utils import get_chain
 
@@ -105,14 +117,14 @@ def get_area(adjacency_matrix, centres, no_atoms, radii):
     # surface area of the molecule
     area = 0
     for i in range(0, no_atoms):
-        sphere_i = 4 * math.pi * radii[i] ** 2
+        sphere_i = 4 * np.pi * radii[i] ** 2
         for j in range(0, no_atoms):
             if adjacency_matrix[i, j] == 1:
-                sphere_i = (sphere_i - 2 * radii[i] * math.pi * abs(radii[i] - lam[i, j]))
+                sphere_i = (sphere_i - 2 * radii[i] * np.pi * abs(radii[i] - lam[i, j]))
         area += sphere_i
 
     if area < 0:
-        raise ValueError('Negative Surface Area, cannot approximate surface')
+        raise ArithmeticError('Negative Surface Area, cannot approximate surface')
 
     mol_area = namedtuple('mol_area', ['lam', 'area'])
 
@@ -128,9 +140,9 @@ def rescale_inputs(area, centres, radii, lam):
         :param area:
         :return x_r:
     """
-    centres_r = centres * math.sqrt(4 * math.pi / area)
-    radii_r = radii * math.sqrt(4 * math.pi / area)
-    lam_r = lam * math.sqrt(4 * math.pi / area)
+    centres_r = centres * np.sqrt(4 * np.pi / area)
+    radii_r = radii * np.sqrt(4 * np.pi / area)
+    lam_r = lam * np.sqrt(4 * np.pi / area)
 
     rescaled = namedtuple('rescaled', ['centres_r', 'radii_r', 'lam_r'])
 
@@ -192,11 +204,11 @@ def base_error(levels, inputs, base, rescaled):
 
     fine_2 = 0
     angle_x = 10
-    while angle_x <= math.pi and fine_2 == 0:
+    while angle_x <= np.pi and fine_2 == 0:
 
         # define matrix to rotate about x and y
         rot_mat_x = np.array(
-            [[1, 0, 0], [0, math.cos(angle_x), -math.sin(angle_x)], [0, math.sin(angle_x), math.cos(angle_x)]])
+            [[1, 0, 0], [0, np.cos(angle_x), -np.sin(angle_x)], [0, np.sin(angle_x), np.cos(angle_x)]])
         centres_r = np.matmul(centres_r, rot_mat_x)
 
         unit_cover = (1 / la.norm(centres_r[cover_sphere])) * centres_r[cover_sphere]
