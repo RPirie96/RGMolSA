@@ -1,4 +1,11 @@
-# script to get the B matrix
+"""
+script to get the B matrix
+
+Functions:
+- sphere_integral: function to integrate polynomial over the sphere
+- get_b_mat: function to get b matrix
+"""
+
 import numpy as np
 from scipy.special import gamma as gam_fun
 
@@ -6,11 +13,13 @@ from scipy.special import gamma as gam_fun
 def sphere_integral(p, q, s):
     """
     function that integrates a polynomial (x^p)(y^q)(z^s) over a sphere
-    :param p:
-    :param q:
-    :param s:
-    :return result of integration:
+
+    @param p:
+    @param q:
+    @param s:
+    @return: result of integration
     """
+
     ret = 0
     if (p % 2 - 1)*(q % 2 - 1)*(s % 2 - 1) == -1:
         beta_1 = (1/2)*(p + 1)
@@ -22,7 +31,10 @@ def sphere_integral(p, q, s):
 
 
 def get_b_mat():
-    """Code to make B matrix"""
+    """
+    Code to make B matrix
+    @return: b matrix
+    """
     grad_mat_2 = np.zeros((9, 9), dtype=float)
     eig_1 = 2
     eig_2 = 6
