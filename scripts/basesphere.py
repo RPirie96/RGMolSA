@@ -21,10 +21,12 @@ from utils import get_chain
 
 
 def get_base_sphere(centres):
+
     """
-        Function which selects the starting atom (base-sphere). This is taken as the atom closest to the centroid
-        :param centres:
-        :return centres, base_sphere:
+    Function which selects the starting atom (base-sphere). This is taken as the atom closest to the centroid
+
+    @param centres:
+    @return: centres, base_sphere
     """
 
     # Find the centroid
@@ -44,13 +46,15 @@ def get_base_sphere(centres):
 
 
 def get_levels(adjacency_matrix, no_atoms, base_sphere):
+
     """
-        Function to generate matrix of levels starting from base sphere. produce a matrix of integers row = level;
-        1 = non-terminal at this level, 2 = terminal at this level
-        :param base_sphere:
-        :param no_atoms:
-        :param adjacency_matrix:
-        :return level_mat, no_levels:
+    Function to generate matrix of levels starting from base sphere. produce a matrix of integers row = level;
+    1 = non-terminal at this level, 2 = terminal at this level
+
+    @param adjacency_matrix:
+    @param no_atoms:
+    @param base_sphere:
+    @return: level_mat, no_levels
     """
 
     r_sum = adjacency_matrix.sum(axis=1)
@@ -88,18 +92,20 @@ def get_levels(adjacency_matrix, no_atoms, base_sphere):
 
 
 def get_area(adjacency_matrix, centres, no_atoms, radii):
-    """
-        Function to return the surface area of the molecule, and the matrix of lambda values
-        :param adjacency_matrix:
-        :param centres:
-        :param no_atoms:
-        :param radii:
-        :return lam, area:
 
-        If the area is negative (usually for bridged bicyclic compounds with >2 intersecting rings) a
-        ValueError is raised. As the area is computed as the area of a sphere - the bit where two spheres
-        intersect, multiple large spheres intersecting leads to a negative value, and thus the surface of the
-        molecule cannot be approximated.
+    """
+    Function to return the surface area of the molecule, and the matrix of lambda values
+
+    If the area is negative (usually for bridged bicyclic compounds with >2 intersecting rings) a
+    ValueError is raised. As the area is computed as the area of a sphere - the bit where two spheres
+    intersect, multiple large spheres intersecting leads to a negative value, and thus the surface of the
+    molecule cannot be approximated.
+
+    @param adjacency_matrix:
+    @param centres:
+    @param no_atoms:
+    @param radii:
+    @return: area and matrix of lambda values
     """
 
     # matrix of distances between intersecting atoms
@@ -132,14 +138,17 @@ def get_area(adjacency_matrix, centres, no_atoms, radii):
 
 
 def rescale_inputs(area, centres, radii, lam):
+
     """
-        Function to rescale input values
-        :param lam:
-        :param radii:
-        :param centres:
-        :param area:
-        :return x_r:
+    Function to rescale all inputs to give total surface area equal to 4pi
+
+    @param area:
+    @param centres:
+    @param radii:
+    @param lam:
+    @return: inputs rescaled to have surface area 4pi
     """
+
     centres_r = centres * np.sqrt(4 * np.pi / area)
     radii_r = radii * np.sqrt(4 * np.pi / area)
     lam_r = lam * np.sqrt(4 * np.pi / area)
@@ -150,8 +159,15 @@ def rescale_inputs(area, centres, radii, lam):
 
 
 def base_error(levels, inputs, base, rescaled):
+
     """
-        Function to return the vector of next level spheres and the updated rescaled centres post-error handling
+    Function to return the vector of next level spheres and the updated rescaled centres post-error handling
+
+    @param levels:
+    @param inputs:
+    @param base:
+    @param rescaled:
+    @return: updated centres
     """
 
     # unpack tuples
