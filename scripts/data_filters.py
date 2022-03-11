@@ -37,9 +37,9 @@ def macrocycle_filter(mols, ids=None):
     macro = Chem.MolFromSmarts("[r{12-}]")  # SMARTS pattern with ring size > 12
     mols_new, ids_new = [], []
 
-    for i, _ in enumerate(mols):
-        if not mols[i].GetSubstructMatches(macro):  # if there are no substructure matches
-            mols_new.append(mols[i])  # add non-macro to list
+    for i, mol in enumerate(mols):
+        if not mol.GetSubstructMatches(macro):  # if there are no substructure matches
+            mols_new.append(mol)  # add non-macro to list
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
@@ -88,9 +88,9 @@ def size_filter(mols, ids=None):
 
     mols_new, ids_new = [], []
 
-    for i, _ in enumerate(mols):
-        if mols[i].GetNumHeavyAtoms() >= 6 and Chem.Descriptors.ExactMolWt(mols[i]) <= 750.0:
-            mols_new.append(mols[i])  # add appropriate sized mols to list
+    for i, mol in enumerate(mols):
+        if mol.GetNumHeavyAtoms() >= 6 and Chem.Descriptors.ExactMolWt(mol) <= 750.0:
+            mols_new.append(mol)  # add appropriate sized mols to list
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
@@ -120,11 +120,11 @@ def drug_like_filter(mols, ids=None):
     atom_list = ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br", "I", "B"]
     mols_new, ids_new = [], []
 
-    for i, _ in enumerate(mols):
+    for i, mol in enumerate(mols):
         count_b = 0
         count_c = 0
         inc_mol = True
-        for atom in mols[i].GetAtoms():
+        for atom in mol.GetAtoms():
             a_type = atom.GetSymbol()
             if a_type not in atom_list:
                 inc_mol = False
@@ -137,7 +137,7 @@ def drug_like_filter(mols, ids=None):
         if count_c == 0:
             inc_mol = False  # exclude mols with no Carbons
         if inc_mol:
-            mols_new.append(mols[i])  # add non-small to list
+            mols_new.append(mol)  # add non-small to list
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
@@ -168,8 +168,8 @@ def ro5_filter(mols, ids=None):
     """
 
     mols_new, ids_new = [], []
-    for i, _ in enumerate(mols):
-        mol_hs = Chem.AddHs(mols[i])
+    for i, mol in enumerate(mols):
+        mol_hs = Chem.AddHs(mol)
 
         # Calculate rule of five chemical properties
         mw = Chem.Descriptors.ExactMolWt(mol_hs)
@@ -181,7 +181,7 @@ def ro5_filter(mols, ids=None):
         conditions = [mw <= 500, hba <= 10, hbd <= 5, logp <= 5]
 
         if conditions.count(True) >= 3:  # add ro5 compliant to list
-            mols_new.append(mols[i])
+            mols_new.append(mol)
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
@@ -210,10 +210,10 @@ def pains_filter(mols, ids=None):
     catalog = Chem.FilterCatalog.FilterCatalog(params_pains)
 
     mols_new, ids_new = [], []
-    for i, _ in enumerate(mols):
-        entry = catalog.GetFirstMatch(mols[i])  # get the first matching PAINS
+    for i, mol in enumerate(mols):
+        entry = catalog.GetFirstMatch(mol)  # get the first matching PAINS
         if entry is None:  # if no matching substructures keep the molecule
-            mols_new.append(mols[i])
+            mols_new.append(mol)
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
