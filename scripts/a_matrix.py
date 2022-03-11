@@ -1,13 +1,26 @@
-# script to get the A Matrix
+"""
+script to get the A Matrix
+
+Functions:
+- get_a_mat: function to return a matrix
+"""
+
 import numpy as np
 from numpy import linalg as la
 import utils
 
 
 def get_a_mat(no_atoms, sgp, error):
+
     """
     Code to make A matrix
+
+    @param no_atoms:
+    @param sgp:
+    @param error:
+    @return: return a_matrix
     """
+
     com_plan_cent = sgp.com_plan_cent
     com_plan_rad = sgp.com_plan_rad
     d_0_mat_t = sgp.d_0_mat_t
@@ -27,7 +40,8 @@ def get_a_mat(no_atoms, sgp, error):
             d_inv = ([[1, 0], [0, 1]])
             com_plan_rad[0][sphere] = 10
         else:
-            d = utils.transform_v2(com_plan_cent[level][sphere], com_plan_rad[level][sphere])  # maps circle to origin
+            # maps circle to origin
+            d = utils.transform_v2(com_plan_cent[level][sphere], com_plan_rad[level][sphere])
             radius = utils.t_circle(d[0][0], d[0][1], d[1][0], d[1][1], com_plan_cent[level][sphere], com_plan_rad[level][sphere])[1]
             d_inv = la.inv(d)
 
@@ -125,7 +139,7 @@ def get_a_mat(no_atoms, sgp, error):
         yzz_val = y_val - xxy_val - yyy_val
 
         # degree 4
-        if c > 10 ** (-9) and b > 10 ** (-9):
+        if c > 10 ** (-5) and b > 10 ** (-7):
             xxxx_val = utils.xxxx_integral(a, b, c, radius)
             yyyy_val = utils.xxxx_integral(1j * a, b, c, radius)
             zzzz_val = utils.zzzz_integral(a, b, c, radius)
@@ -709,7 +723,7 @@ def get_a_mat(no_atoms, sgp, error):
             yzz_val = y_val - xxy_val - yyy_val
 
             # degree 4
-            if c > 10 ** (-9) and b > 10 ** (-9):
+            if c > 10 ** (-5) and b > 10 ** (-7):
                 xxxx_val = utils.xxxx_integral(a, b, c, radius)
                 yyyy_val = utils.xxxx_integral(1j * a, b, c, radius)
                 zzzz_val = utils.zzzz_integral(a, b, c, radius)
