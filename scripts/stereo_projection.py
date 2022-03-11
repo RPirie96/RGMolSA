@@ -1,8 +1,14 @@
-# script to compute the stereographic projection of the molecule
+"""
+script to compute the stereographic projection of the molecule
+
+Functions:
+- get_stereographic_projection: piecewise stereographic projection of the molecule into CP^n
+"""
+
+from collections import namedtuple
+import math
 import numpy as np
 from numpy import linalg as la
-import math
-from collections import namedtuple
 
 from utils import get_chain, get_m_rot, alpha_coefficient, beta_coefficient, t_circle
 
@@ -10,7 +16,12 @@ from utils import get_chain, get_m_rot, alpha_coefficient, beta_coefficient, t_c
 def get_stereographic_projection(levels, inputs, rescaled, centres_r):
     """
     Function to return the piecewise stereographic projection of the molecule into CP^n
-    :return:
+
+    @param levels:
+    @param inputs:
+    @param rescaled:
+    @param centres_r:
+    @return: named tuple with stereographic projection constructs
     """
 
     # unpack tuples
