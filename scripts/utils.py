@@ -1,4 +1,6 @@
-# script of helper functions
+"""
+script of helper functions
+"""
 import numpy as np
 import math
 from scipy.spatial import distance
@@ -118,6 +120,81 @@ def transform_v2(a, r):
         transform = np.array([[np.conj(beta), alpha], [-alpha, beta]])
 
     return transform
+
+
+def cut_10(inputs, error):
+    """
+    Function to cut out levels > 10 (removes "crunching" of spheres that triggers LinAlgError)
+
+    @param inputs:
+    @param error:
+    @return: updated inputs with > level 10 atoms omitted
+    """
+    # unpack tuples
+    no_atoms = inputs.no_atoms
+    adjacency_matrix = inputs.adjacency_matrix
+    radii = inputs.radii
+    centres = inputs.centres
+    sphere_levels_vec = error.sphere_levels_vec
+
+    keep = []  # vector telling us whether to keep (1) or cut (0) sphere
+
+    for sphere in range(0, no_atoms):
+        level = sphere_levels_vec[sphere]
+        if level < 11:
+            keep.append(1)
+        else:
+            keep.append(0)
+    size = sum(keep)
+
+    new_centres = np.zeros((size, 3), dtype=float)
+    new_radii = np.zeros(size, dtype=float)
+    adj_mat_2 = np.zeros((size, size), dtype=int)
+
+    ind_i = 0
+    for sphere in range(0, no_atoms):
+        if keep[sphere] == 1:
+            new_centres[ind_i][0] = centres[sphere][0]
+            new_centres[ind_i][1] = centres[sphere][1]
+            new_centres[ind_i][2] = centres[sphere][2]
+            new_radii[ind_i] = radii[sphere]
+            ind_j = 0
+            for sphere_2 in range(0, no_atoms):
+                if keep[sphere_2] == 1:
+                    adj_mat_2[ind_i, ind_j] = adjacency_matrix[sphere, sphere_2]
+                    ind_j += 1
+            ind_i += 1
+
+    adjacency_matrix = adj_mat_2
+
+    new_inputs = namedtuple(
+        "input", ["no_atoms", "radii", "centres", "adjacency_matrix"]
+    )
+
+    return new_inputs(
+        no_atoms=size,
+        radii=new_radii,
+        centres=new_centres,
+        adjacency_matrix=adjacency_matrix,
+    )
+
+
+def get_score(query, test, query_id=None, test_id=None):
+    """
+    Function to compute the normalised Bray-Curtis distance between two molecules
+    @param query:
+    @param test:
+    @param query_id:
+    @param test_id:
+    @return: "self" if the query and test ids match, score rounded to 3dp
+    """
+    if query_id is not None:
+        if query_id == test_id:
+            return "self"  # marker for self comparison
+        else:
+            return round((1 - distance.braycurtis(query, test)), 3)  # return score to 3dp
+    else:
+        return round((1 - distance.braycurtis(query, test)), 3)  # return score to 3dp
 
 
 def vol_integral(a, b, c, x):
@@ -5187,27 +5264,3 @@ def xxxz_integral(a, b, c, x):
         return 4 * np.pi * c * ret
     if abs(a_conj) < 0.00000001:
         return 0
-
-
-def get_score(query, test, query_id=None):
-    scores = []
-    if query_id is not None:
-        for i in range(len(test)):
-            if query_id == i:
-                scores.append("self")  # marker for self comparison
-            else:
-                scores.append(
-                    1 - distance.braycurtis(query, test[i])
-                )  # add score to list
-    else:
-        for i in range(len(test)):
-            scores.append(1 - distance.braycurtis(query, test[i]))  # add score to list
-
-    scores_round = []
-    for score in scores:
-        if isinstance(score, float) or isinstance(score, int):
-            scores_round.append(round(score, 3))
-        else:
-            scores_round.append(score)
-
-    return scores_round

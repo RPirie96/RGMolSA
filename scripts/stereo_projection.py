@@ -23,7 +23,6 @@ def get_stereographic_projection(levels, inputs, rescaled, centres_r):
     @param centres_r:
     @return: named tuple with stereographic projection constructs
     """
-
     # unpack tuples
     no_levels = levels.no_levels
     level_mat = levels.level_mat
