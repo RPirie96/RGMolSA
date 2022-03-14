@@ -43,7 +43,7 @@ def macrocycle_filter(mols, ids=None):
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
-    filtered_data = namedtuple('filtered_data', ['mols_new', 'ids_new'])
+    filtered_data = namedtuple("filtered_data", ["mols_new", "ids_new"])
 
     return filtered_data(mols_new=mols_new, ids_new=ids_new)
 
@@ -94,7 +94,7 @@ def size_filter(mols, ids=None):
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
-    filtered_data = namedtuple('filtered_data', ['mols_new', 'ids_new'])
+    filtered_data = namedtuple("filtered_data", ["mols_new", "ids_new"])
 
     return filtered_data(mols_new=mols_new, ids_new=ids_new)
 
@@ -141,7 +141,7 @@ def drug_like_filter(mols, ids=None):
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
-    filtered_data = namedtuple('filtered_data', ['mols_new', 'ids_new'])
+    filtered_data = namedtuple("filtered_data", ["mols_new", "ids_new"])
 
     return filtered_data(mols_new=mols_new, ids_new=ids_new)
 
@@ -185,7 +185,7 @@ def ro5_filter(mols, ids=None):
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
-    filtered_data = namedtuple('filtered_data', ['mols_new', 'ids_new'])
+    filtered_data = namedtuple("filtered_data", ["mols_new", "ids_new"])
 
     return filtered_data(mols_new=mols_new, ids_new=ids_new)
 
@@ -206,7 +206,9 @@ def pains_filter(mols, ids=None):
 
     # initialize pains filter
     params_pains = Chem.rdfiltercatalog.FilterCatalogParams()
-    params_pains.AddCatalog(Chem.rdfiltercatalog.FilterCatalogParams.FilterCatalogs.PAINS)
+    params_pains.AddCatalog(
+        Chem.rdfiltercatalog.FilterCatalogParams.FilterCatalogs.PAINS
+    )
     catalog = Chem.FilterCatalog.FilterCatalog(params_pains)
 
     mols_new, ids_new = [], []
@@ -217,7 +219,7 @@ def pains_filter(mols, ids=None):
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
 
-    filtered_data = namedtuple('filtered_data', ['mols_new', 'ids_new'])
+    filtered_data = namedtuple("filtered_data", ["mols_new", "ids_new"])
 
     return filtered_data(mols_new=mols_new, ids_new=ids_new)
 
@@ -282,9 +284,9 @@ def filter_dataset(mols, ids=None, filename=None, ro5=False, pains=False):
     if filename:  # if a filename is supplied, save the filtered data to a SDF
         data = pd.DataFrame()
         if ids:
-            data['ID'] = filtered_final.ids_new
-        data['ROMol'] = filtered_final.mols_new
+            data["ID"] = filtered_final.ids_new
+        data["ROMol"] = filtered_final.mols_new
 
-        Chem.PandasTools.WriteSDF(data, filename, molColName='ROMol')  # save to sdf
+        Chem.PandasTools.WriteSDF(data, filename, molColName="ROMol")  # save to sdf
 
     return filtered_final

@@ -30,8 +30,11 @@ def get_base_sphere(centres):
     """
 
     # Find the centroid
-    centroid = [np.sum(centres[:, 0]) / len(centres[:, 0]), np.sum(centres[:, 1]) / len(centres[:, 1]),
-                np.sum(centres[:, 2]) / len(centres[:, 2])]
+    centroid = [
+        np.sum(centres[:, 0]) / len(centres[:, 0]),
+        np.sum(centres[:, 1]) / len(centres[:, 1]),
+        np.sum(centres[:, 2]) / len(centres[:, 2]),
+    ]
 
     # Find the index of the minimum Euclidean distance and set this as the base sphere
     base_sphere = np.argmin(np.sqrt(np.sum(np.square(centres - centroid), axis=1)))
@@ -40,7 +43,7 @@ def get_base_sphere(centres):
     c_rel = centres - centres[base_sphere]
     centres = c_rel[:]
 
-    base = namedtuple('base', ['centres', 'base_sphere'])
+    base = namedtuple("base", ["centres", "base_sphere"])
 
     return base(centres=centres, base_sphere=base_sphere)
 
@@ -59,7 +62,9 @@ def get_levels(adjacency_matrix, no_atoms, base_sphere):
 
     r_sum = adjacency_matrix.sum(axis=1)
     to_do = no_atoms - 1  # how may remaining spheres need to be assigned
-    assigned, level_mat = np.zeros((1, no_atoms), dtype=int), np.zeros((1, no_atoms), dtype=int)
+    assigned, level_mat = np.zeros((1, no_atoms), dtype=int), np.zeros(
+        (1, no_atoms), dtype=int
+    )
     assigned[0, base_sphere] = 1
     level_mat[0, base_sphere] = 1
 
@@ -72,11 +77,19 @@ def get_levels(adjacency_matrix, no_atoms, base_sphere):
                 current_sphere = j
 
                 for i in range(0, no_atoms):
-                    if adjacency_matrix[current_sphere, i] == 1 and r_sum[i] == 1 and assigned[0, i] == 0:
+                    if (
+                        adjacency_matrix[current_sphere, i] == 1
+                        and r_sum[i] == 1
+                        and assigned[0, i] == 0
+                    ):
                         next_level[0, i] = 2
                         assigned[0, i] = 1
                         to_do += -1
-                    if adjacency_matrix[current_sphere, i] == 1 and r_sum[i] > 1 and assigned[0, i] == 0:
+                    if (
+                        adjacency_matrix[current_sphere, i] == 1
+                        and r_sum[i] > 1
+                        and assigned[0, i] == 0
+                    ):
                         next_level[0, i] = 1
                         assigned[0, i] = 1
                         to_do += -1
@@ -86,7 +99,7 @@ def get_levels(adjacency_matrix, no_atoms, base_sphere):
 
     no_levels = len(level_mat) - 1  # number of levels
 
-    levels = namedtuple('levels', ['level_mat', 'no_levels'])
+    levels = namedtuple("levels", ["level_mat", "no_levels"])
 
     return levels(level_mat=level_mat, no_levels=no_levels)
 
@@ -116,7 +129,9 @@ def get_area(adjacency_matrix, centres, no_atoms, radii):
     for i in range(0, no_atoms):
         for j in range(0, no_atoms):
             if adjacency_matrix[i, j] == 1:
-                lam[i, j] = (radii[i] ** 2 - radii[j] ** 2 + distances[i, j] ** 2) / (2 * distances[i, j])
+                lam[i, j] = (radii[i] ** 2 - radii[j] ** 2 + distances[i, j] ** 2) / (
+                    2 * distances[i, j]
+                )
             else:
                 lam[i, j] = 0
 
@@ -126,13 +141,13 @@ def get_area(adjacency_matrix, centres, no_atoms, radii):
         sphere_i = 4 * np.pi * radii[i] ** 2
         for j in range(0, no_atoms):
             if adjacency_matrix[i, j] == 1:
-                sphere_i = (sphere_i - 2 * radii[i] * np.pi * abs(radii[i] - lam[i, j]))
+                sphere_i = sphere_i - 2 * radii[i] * np.pi * abs(radii[i] - lam[i, j])
         area += sphere_i
 
     if area < 0:
-        raise ArithmeticError('Negative Surface Area, cannot approximate surface')
+        raise ArithmeticError("Negative Surface Area, cannot approximate surface")
 
-    mol_area = namedtuple('mol_area', ['lam', 'area'])
+    mol_area = namedtuple("mol_area", ["lam", "area"])
 
     return mol_area(lam=lam, area=area)
 
@@ -153,7 +168,7 @@ def rescale_inputs(area, centres, radii, lam):
     radii_r = radii * np.sqrt(4 * np.pi / area)
     lam_r = lam * np.sqrt(4 * np.pi / area)
 
-    rescaled = namedtuple('rescaled', ['centres_r', 'radii_r', 'lam_r'])
+    rescaled = namedtuple("rescaled", ["centres_r", "radii_r", "lam_r"])
 
     return rescaled(centres_r=centres_r, radii_r=radii_r, lam_r=lam_r)
 
@@ -203,7 +218,11 @@ def base_error(levels, inputs, base, rescaled):
         sphere_levels_vec.append(j)
         next_spheres = []
         for s_n in range(0, no_atoms):
-            if j < no_levels and fingerprint[j][s_n] == i and fingerprint[j + 1][s_n] == s_n:
+            if (
+                j < no_levels
+                and fingerprint[j][s_n] == i
+                and fingerprint[j + 1][s_n] == s_n
+            ):
                 next_spheres.append(s_n)
         next_level.append(next_spheres)
 
@@ -213,7 +232,12 @@ def base_error(levels, inputs, base, rescaled):
     i = 0
     while i < len(next_level[base_sphere]) and fine == 0:
         check_sphere = next_level[base_sphere][i]
-        if la.norm(centres_r[check_sphere] - radii_r[base_sphere] * np.array([0, 0, 1])) <= radii_r[check_sphere]:
+        if (
+            la.norm(
+                centres_r[check_sphere] - radii_r[base_sphere] * np.array([0, 0, 1])
+            )
+            <= radii_r[check_sphere]
+        ):
             cover_sphere = check_sphere
             fine = 1  # if there is something over the north pole
         i += 1
@@ -224,11 +248,16 @@ def base_error(levels, inputs, base, rescaled):
 
         # define matrix to rotate about x and y
         rot_mat_x = np.array(
-            [[1, 0, 0], [0, np.cos(angle_x), -np.sin(angle_x)], [0, np.sin(angle_x), np.cos(angle_x)]])
+            [
+                [1, 0, 0],
+                [0, np.cos(angle_x), -np.sin(angle_x)],
+                [0, np.sin(angle_x), np.cos(angle_x)],
+            ]
+        )
         centres_r = np.matmul(centres_r, rot_mat_x)
 
         unit_cover = (1 / la.norm(centres_r[cover_sphere])) * centres_r[cover_sphere]
-        plane_point = (0.85 * lam_r[base_sphere][cover_sphere] * unit_cover)
+        plane_point = 0.85 * lam_r[base_sphere][cover_sphere] * unit_cover
         v_rand = np.random.rand(3)
         v_rand = v_rand / (la.norm(v_rand))
         w_rand = np.cross(unit_cover, v_rand)
@@ -237,7 +266,10 @@ def base_error(levels, inputs, base, rescaled):
         b_coefficient = 2 * np.dot(plane_point, w_rand)
         c_coefficient = la.norm(plane_point) ** 2 - radii_r[base_sphere] ** 2
 
-        mu = (-b_coefficient + np.sqrt(b_coefficient ** 2 - 4 * a_coefficient * c_coefficient)) / (2 * a_coefficient)
+        mu = (
+            -b_coefficient
+            + np.sqrt(b_coefficient ** 2 - 4 * a_coefficient * c_coefficient)
+        ) / (2 * a_coefficient)
         test_point = plane_point + mu * w_rand
         fine_2 = 1
         for i in range(0, len(next_level[base_sphere])):
@@ -247,6 +279,8 @@ def base_error(levels, inputs, base, rescaled):
 
         angle_x = angle_x + 10
 
-    error = namedtuple('error', ['sphere_levels_vec', 'next_level', 'centres_r'])
+    error = namedtuple("error", ["sphere_levels_vec", "next_level", "centres_r"])
 
-    return error(sphere_levels_vec=sphere_levels_vec, next_level=next_level, centres_r=centres_r)
+    return error(
+        sphere_levels_vec=sphere_levels_vec, next_level=next_level, centres_r=centres_r
+    )

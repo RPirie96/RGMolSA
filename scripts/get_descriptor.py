@@ -36,16 +36,22 @@ def get_descriptor(mol):
         levels = get_levels(inputs.adjacency_matrix, inputs.no_atoms, base.base_sphere)
 
         # get molecule area
-        mol_area = get_area(inputs.adjacency_matrix, base.centres, inputs.no_atoms, inputs.radii)
+        mol_area = get_area(
+            inputs.adjacency_matrix, base.centres, inputs.no_atoms, inputs.radii
+        )
 
         # rescale inputs so molecule has surface area equivalent to a unit sphere
-        rescaled = rescale_inputs(mol_area.area, base.centres, inputs.radii, mol_area.lam)
+        rescaled = rescale_inputs(
+            mol_area.area, base.centres, inputs.radii, mol_area.lam
+        )
 
         # error handling to account for cases where there is an atom over the north pole
         error = base_error(levels, inputs, base, rescaled)
 
         # perform 'piecewise stereographic projection' to move molecule into CP^n
-        stereo_proj = get_stereographic_projection(levels, inputs, rescaled, error.centres_r)
+        stereo_proj = get_stereographic_projection(
+            levels, inputs, rescaled, error.centres_r
+        )
 
         # get b matrix
         b_mat = get_b_mat()
@@ -68,20 +74,30 @@ def get_descriptor(mol):
             base = get_base_sphere(new_inputs.centres)
 
             # get levels within molecule
-            levels = get_levels(new_inputs.adjacency_matrix, new_inputs.no_atoms, base.base_sphere)
+            levels = get_levels(
+                new_inputs.adjacency_matrix, new_inputs.no_atoms, base.base_sphere
+            )
 
             # get molecule area
-            mol_area = get_area(new_inputs.adjacency_matrix, base.centres,
-                                new_inputs.no_atoms, new_inputs.radii)
+            mol_area = get_area(
+                new_inputs.adjacency_matrix,
+                base.centres,
+                new_inputs.no_atoms,
+                new_inputs.radii,
+            )
 
             # rescale inputs so molecule has surface area equivalent to a unit sphere
-            rescaled = rescale_inputs(mol_area.area, base.centres, new_inputs.radii, mol_area.lam)
+            rescaled = rescale_inputs(
+                mol_area.area, base.centres, new_inputs.radii, mol_area.lam
+            )
 
             # error handling to account for cases where there is an atom over the north pole
             error = base_error(levels, new_inputs, base, rescaled)
 
             # perform piecewise stereographic projection to move molecule into CP^n
-            stereo_proj = get_stereographic_projection(levels, new_inputs, rescaled, error.centres_r)
+            stereo_proj = get_stereographic_projection(
+                levels, new_inputs, rescaled, error.centres_r
+            )
 
             # get b matrix
             b_mat = get_b_mat()

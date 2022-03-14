@@ -21,10 +21,14 @@ def embed_3d(mol):
 
     # set parameters for embedding
     params = AllChem.ETKDGv3()
-    params.useRandomCoords = True  # use random coordinates to help with issue of failed embeddings
-    params.randomSeed = 0xf00d  # random seed for reproducibility
+    params.useRandomCoords = (
+        True  # use random coordinates to help with issue of failed embeddings
+    )
+    params.randomSeed = 0xF00D  # random seed for reproducibility
     params.useSmallRingTorsions = True  # includes recent improvements for small rings
-    params.maxAttempts = 1000  # ignore smoothing failures, should be sufficient in most cases
+    params.maxAttempts = (
+        1000  # ignore smoothing failures, should be sufficient in most cases
+    )
 
     mol = Chem.AddHs(mol)  # add explicit Hs to obtain better conformations
     AllChem.EmbedMolecule(mol, params)  # get 3D coordinates
@@ -56,10 +60,14 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
 
     # set parameters for embedding
     params = AllChem.ETKDGv3()
-    params.useRandomCoords = True  # use random coordinates to help with issue of failed embeddings
-    params.randomSeed = 0xf00d  # random seed for reproducibility
+    params.useRandomCoords = (
+        True  # use random coordinates to help with issue of failed embeddings
+    )
+    params.randomSeed = 0xF00D  # random seed for reproducibility
     params.useSmallRingTorsions = True  # includes recent improvements for small rings
-    params.maxAttempts = 1000  # ignore smoothing failures, should be sufficient in most cases
+    params.maxAttempts = (
+        1000  # ignore smoothing failures, should be sufficient in most cases
+    )
     params.pruneRmsThresh = 0.1  # ignore any confs that are too similar
 
     for i, mol in enumerate(mols):
@@ -82,14 +90,16 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
         cids = AllChem.EmbedMultipleConfs(mol, no_confs, params)
 
         # energy optimise conformers
-        mol_props = AllChem.MMFFGetMoleculeProperties(mol, mmffVariant='MMFF94s')
-        AllChem.MMFFOptimizeMoleculeConfs(mol, numThreads=0, mmffVariant='MMFF94s')
+        mol_props = AllChem.MMFFGetMoleculeProperties(mol, mmffVariant="MMFF94s")
+        AllChem.MMFFOptimizeMoleculeConfs(mol, numThreads=0, mmffVariant="MMFF94s")
 
         if energy_sorted:
             # sort
             res = []
             for cid in cids:
-                force_field = AllChem.MMFFGetMoleculeForceField(mol, mol_props, confId=cid)
+                force_field = AllChem.MMFFGetMoleculeForceField(
+                    mol, mol_props, confId=cid
+                )
                 energy = force_field.CalcEnergy()
                 res.append((cid, energy))
             sorted_res = sorted(res, key=lambda x: x[1])
@@ -99,17 +109,17 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
             mol = Chem.RemoveHs(mol)
 
             for cid, energy in sorted_res:
-                mol.SetProp('ID', str(mol_id))
-                mol.SetProp('CID', str(cid))
-                mol.SetProp('Energy', str(energy))
+                mol.SetProp("ID", str(mol_id))
+                mol.SetProp("CID", str(cid))
+                mol.SetProp("Energy", str(energy))
                 w.write(mol, confId=cid)
 
         else:
             # remove Hs
             mol = Chem.RemoveHs(mol)
             for cid in cids:
-                mol.SetProp('ID', str(mol_id))
-                mol.SetProp('CID', str(cid))
+                mol.SetProp("ID", str(mol_id))
+                mol.SetProp("CID", str(cid))
                 w.write(mol, confId=cid)
 
     w.close()
