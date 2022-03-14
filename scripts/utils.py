@@ -1,6 +1,7 @@
 """
 script of helper functions
 """
+from collections import namedtuple
 import numpy as np
 import math
 from scipy.spatial import distance

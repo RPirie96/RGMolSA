@@ -125,5 +125,5 @@ def get_descriptor(mol):
     except TypeError:
         return "TypeError"
 
-    except ValueError:
-        return "ValueError"
+    except ArithmeticError:
+        return "ArithmeticError"
