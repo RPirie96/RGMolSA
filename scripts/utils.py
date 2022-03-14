@@ -9,12 +9,12 @@ from scipy.spatial import distance
 def get_chain(no_atoms, level_mat, adjacency_matrix, sphere, level):
     """
     Inputs the level matrix, Intersection matrix and writes the path from base sphere
-    :param no_atoms:
-    :param level_mat:
-    :param adjacency_matrix:
-    :param sphere:
-    :param level:
-    :return chain:
+    @param no_atoms:
+    @param level_mat:
+    @param adjacency_matrix:
+    @param sphere:
+    @param level:
+    @return: chain - path through molecule from base sphere
     """
     chain = np.zeros(
         level + 1, dtype=int
@@ -37,8 +37,8 @@ def get_chain(no_atoms, level_mat, adjacency_matrix, sphere, level):
 def get_m_rot(vector):
     """
     the element of SO(3) that carries out the rotation
-    :param vector:
-    :return m_rot:
+    @param vector:
+    @return: m_rot
     """
     m_rot = np.array(
         [
@@ -62,6 +62,11 @@ def get_m_rot(vector):
 # helper functions for performing piecewise stereographic projection
 # if we rotate (0,0,1) onto (v_1,v_2,v_3) this induces an element of PSU(2)  [[alpha, beta],[-conj(beta), alpha]]
 def alpha_coefficient(vector):  # alpha coefficient
+    """
+    function to get alpha coefficient
+    @param vector:
+    @return: alpha
+    """
     if (vector[2] + 1) ** 2 > 10 ** (-9):
         return math.sqrt((1 + vector[2]) / 2)
     else:
@@ -69,6 +74,11 @@ def alpha_coefficient(vector):  # alpha coefficient
 
 
 def beta_coefficient(vector):  # beta coefficient
+    """
+    function to get beta coefficient
+    @param vector:
+    @return: beta
+    """
     if (vector[2] + 1) ** 2 > 10 ** (-9):
         return -math.sqrt(1 / (2 * (1 + vector[2]))) * complex(vector[0], vector[1])
     else:
@@ -79,13 +89,13 @@ def t_circle(alpha, beta, gamma, delta, c, r_rel):
     """
     function that computes the centre and radius of the image of a circle under the Mobius transformation
     z-->(az+b)/(cz+d)
-    :param alpha:
-    :param beta:
-    :param gamma:
-    :param delta:
-    :param c:
-    :param r_rel:
-    :return [cent, Radius]:
+    @param alpha:
+    @param beta:
+    @param gamma:
+    @param delta:
+    @param c:
+    @param r_rel:
+    @return: [cent, Radius]
     """
     cent = (
         ((beta + (c * alpha)) * np.conj(delta + (c * gamma)))
@@ -101,9 +111,9 @@ def t_circle(alpha, beta, gamma, delta, c, r_rel):
 
 def transform_v2(a, r):
     """
-    :param a:
-    :param r:
-    :return T:
+    @param a:
+    @param r:
+    @return: transform
     """
     alpha = 1
     beta = (
@@ -125,7 +135,6 @@ def transform_v2(a, r):
 def cut_10(inputs, error):
     """
     Function to cut out levels > 10 (removes "crunching" of spheres that triggers LinAlgError)
-
     @param inputs:
     @param error:
     @return: updated inputs with > level 10 atoms omitted
@@ -198,6 +207,14 @@ def get_score(query, test, query_id=None, test_id=None):
 
 
 def vol_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return: vol_integral
+    """
     a_conj = np.conj(a)
     k_0 = a * a_conj
     k_1 = np.sqrt((k_0 + b) ** 2)
@@ -211,6 +228,14 @@ def vol_integral(a, b, c, x):
 
 
 def x_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return: x_integral
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -272,6 +297,14 @@ def x_integral(a, b, c, x):
 
 
 def z_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return: z_integral
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -379,7 +412,14 @@ def z_integral(a, b, c, x):
 
 
 def xx_integral(a, b, c, x):
-
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return: xx_integral
+    """
     a_conj = np.conj(a)
 
     k_1 = np.sqrt((a * a_conj + b) ** 2)
@@ -650,6 +690,14 @@ def xx_integral(a, b, c, x):
 
 
 def xy_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -762,6 +810,14 @@ def xy_integral(a, b, c, x):
 
 
 def xz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -858,6 +914,14 @@ def xz_integral(a, b, c, x):
 
 
 def xxx_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -1150,6 +1214,14 @@ def xxx_integral(a, b, c, x):
 
 
 def xxy_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -1445,6 +1517,14 @@ def xxy_integral(a, b, c, x):
 
 
 def xxz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -1684,6 +1764,14 @@ def xxz_integral(a, b, c, x):
 
 
 def xyz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     # helper variables to tidy up function
@@ -1829,6 +1917,14 @@ def xyz_integral(a, b, c, x):
 
 
 def zzz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
@@ -2003,6 +2099,14 @@ def zzz_integral(a, b, c, x):
 
 
 def xxxx_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
@@ -2778,6 +2882,14 @@ def xxxx_integral(a, b, c, x):
 
 
 def xxxy_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
@@ -3348,6 +3460,14 @@ def xxxy_integral(a, b, c, x):
 
 
 def xxzz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
@@ -3901,6 +4021,14 @@ def xxzz_integral(a, b, c, x):
 
 
 def xzzz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
@@ -4358,6 +4486,14 @@ def xzzz_integral(a, b, c, x):
 
 
 def zzzz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
@@ -4663,6 +4799,14 @@ def zzzz_integral(a, b, c, x):
 
 
 def xxxz_integral(a, b, c, x):
+    """
+    function involved in computing the a_matrix (Rayleigh Ritz approx of the spectrum)
+    @param a:
+    @param b:
+    @param c:
+    @param x:
+    @return:
+    """
     a_conj = np.conj(a)
 
     if abs(a_conj) >= 0.00000001:
