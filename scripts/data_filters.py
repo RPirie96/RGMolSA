@@ -14,6 +14,7 @@ Functions:
 from collections import namedtuple
 import pandas as pd
 from rdkit import Chem
+from rdkit.Chem import Descriptors
 
 
 def macrocycle_filter(mols, ids=None):
@@ -89,7 +90,7 @@ def size_filter(mols, ids=None):
     mols_new, ids_new = [], []
 
     for i, mol in enumerate(mols):
-        if mol.GetNumHeavyAtoms() >= 6 and Chem.Descriptors.ExactMolWt(mol) <= 750.0:
+        if mol.GetNumHeavyAtoms() >= 6 and Descriptors.ExactMolWt(mol) <= 750.0:
             mols_new.append(mol)  # add appropriate sized mols to list
             if ids is not None:
                 ids_new.append(ids[i])  # add molecule id to list
@@ -172,10 +173,10 @@ def ro5_filter(mols, ids=None):
         mol_hs = Chem.AddHs(mol)
 
         # Calculate rule of five chemical properties
-        mw = Chem.Descriptors.ExactMolWt(mol_hs)
-        hba = Chem.Descriptors.NumHAcceptors(mol_hs)
-        hbd = Chem.Descriptors.NumHDonors(mol_hs)
-        logp = Chem.Descriptors.MolLogP(mol_hs)
+        mw = Descriptors.ExactMolWt(mol_hs)
+        hba = Descriptors.NumHAcceptors(mol_hs)
+        hbd = Descriptors.NumHDonors(mol_hs)
+        logp = Descriptors.MolLogP(mol_hs)
 
         # Rule of five conditions
         conditions = [mw <= 500, hba <= 10, hbd <= 5, logp <= 5]
