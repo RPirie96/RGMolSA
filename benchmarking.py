@@ -1,3 +1,4 @@
+#!/usr/bin/env
 import pandas as pd
 import time
 import pickle
@@ -5,19 +6,19 @@ import pickle
 from rdkit.Chem import PandasTools
 
 import sys
-sys.path.append('/Users/rpirie/RGMolSA/scripts')
+sys.path.append('/home/b9046648/RGMolSA/scripts')
 
 from get_descriptor import get_descriptor
 from data_filters import macrocycle_filter, size_filter
 from utils import get_score
 
 # text file to log time and excluded mols
-f = open("target_log.txt", "a")
+f = open("cxcr4_log.txt", "a")
 
 start_time = time.time()
 
 # import active data from SDF
-actives = PandasTools.LoadSDF('target_actives.sdf')
+actives = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/cxcr4/cxcr4_actives.sdf')
 actives = actives.reset_index(drop=True)
 
 ids = list(actives['ID'])
@@ -65,7 +66,7 @@ actives = pd.DataFrame(list(zip(active_ids, active_descriptors)), columns=['ID',
 actives['type'] = True  # label for EF count
 
 # import active data from SDF
-decoys = PandasTools.LoadSDF('target_inactives.sdf')
+decoys = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/cxcr4/cxcr4_inactives.sdf')
 decoys = decoys.reset_index(drop=True)
 
 ids = list(decoys['ID'])
@@ -141,5 +142,5 @@ f.close()
 
 # save dataframe
 dictionary = dict(zip(active_ids, df_list))
-with open('target.pickle', 'wb') as handle:
+with open('cxcr4_rgmolsa.pickle', 'wb') as handle:
     pickle.dump(dictionary, handle, protocol=pickle.HIGHEST_PROTOCOL)
