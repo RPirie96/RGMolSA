@@ -22,12 +22,17 @@ git clone https://github.com/RPirie96/RGMolSA.git
 
 Create a conda environment for the required dependencies (note this was created for MacOS but should work for other OS too)
 ```
-conda env create -f environment_mac.yml
+conda env create -f environment.yml
 ```
 
 ## Running RGMolSA
 
 The Jupyter Notebook "run_RGMolSA.ipynb" can be used to run the code for the examples provided in the paper. Note that you'll need to change the paths specified in the 1st cell to the directory the python scripts and data have been cloned to for the notebook to run.
+
+The script "example_run.py" is a script to run the method for any dataset. It takes in 3 arguments:
+- name of the file containing molecule structures
+- name of the file to write the produced conformers to
+- name of the csv file to write the final set of scores to
 
 #### Data Supplied
 - SVT.sdf: structure data file containing a single conformer for each of Sildenafil, Vardenafil and Tadalafil.
