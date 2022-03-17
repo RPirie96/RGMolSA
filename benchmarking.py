@@ -140,7 +140,7 @@ for i in range(len(active_descriptors)):
 
 elapsed = time.time()
 f.write("Run Time: {} \n".format(elapsed-start_time))
-f.close()
+f.close()  # close log
 
 # save dataframe
 dictionary = dict(zip(active_ids, df_list))
