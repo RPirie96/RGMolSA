@@ -108,7 +108,10 @@ def get_descriptor(mol):
             # calculate final descriptor
             c_mat = np.matmul(la.inv(a_mat), b_mat)
 
-            e_val, e_fun = la.eig(c_mat)
+            try:
+                e_val, e_fun = la.eig(c_mat)
+            except np.linalg.LinAlgError:
+                print(levels)
 
         e_val = sorted(e_val)
 

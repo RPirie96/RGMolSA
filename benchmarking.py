@@ -13,18 +13,19 @@ from data_filters import macrocycle_filter, size_filter
 from utils import get_score
 
 # text file to log time and excluded mols
-f = open("cxcr4_log.txt", "a")
+f = open("adrb2_log.txt", "a")
 
 start_time = time.time()
 
 # import active data from SDF
-actives = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/cxcr4/cxcr4_actives.sdf')
+actives = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/adrb2/adrb2_actives.sdf')
+actives = actives.drop_duplicates('ID', keep = 'first')
 actives = actives.reset_index(drop=True)
 
 ids = list(actives['ID'])
 mols = list(actives['ROMol'])
-f.write("Number of Actives pre-filtering {0}".format(len(mols)))
-f.write("-----------------------------")
+f.write("Number of Actives pre-filtering {0} \n".format(len(mols)))
+f.write("-----------------------------\n")
 
 # remove macrocycles and molecules that are too big/small
 mac_filtered = macrocycle_filter(mols, ids)
@@ -34,13 +35,13 @@ active_mols = size_filtered.mols_new
 active_ids = size_filtered.ids_new
 
 # log updated no actives + list of IDs excluded
-f.write("Number of Actives post filtering {0}".format(len(active_mols)))
-f.write("-----------------------------")
+f.write("Number of Actives post filtering {0} \n".format(len(active_mols)))
+f.write("-----------------------------\n")
 
-filtered_ids = list(set(active_ids) - set(ids))
+filtered_ids = [i for i in ids if i not in active_ids]
 
-f.write("Active molecules excluded by size/macrocycle filters: ", filtered_ids)
-f.write("-----------------------------")
+f.write("Active molecules excluded by size/macrocycle filters: {0}\n".format(filtered_ids))
+f.write("-----------------------------\n")
 
 # get descriptors
 active_descriptors = [get_descriptor(mol) for mol in active_mols]
@@ -55,8 +56,8 @@ for i in range(len(active_descriptors)):
 
 error_ids = [active_ids[i] for i in error_idx]
 if len(error_ids) != 0:
-    f.write("Active molecules that raised a Arithmetic/Type error: ", error_ids)
-    f.write("-----------------------------")
+    f.write("Active molecules that raised a Arithmetic/Type error: {0}\n".format(error_ids))
+    f.write("-----------------------------\n")
 
 active_descriptors = [active_descriptors[i] for i in range(len(active_descriptors)) if i not in error_idx]
 active_ids = [active_ids[i] for i in range(len(active_ids)) if i not in error_idx]
@@ -66,13 +67,14 @@ actives = pd.DataFrame(list(zip(active_ids, active_descriptors)), columns=['ID',
 actives['type'] = True  # label for EF count
 
 # import active data from SDF
-decoys = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/cxcr4/cxcr4_inactives.sdf')
+decoys = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/adrb2/adrb2_inactives.sdf')
+decoys = decoys.drop_duplicates('ID', keep = 'first')
 decoys = decoys.reset_index(drop=True)
 
 ids = list(decoys['ID'])
 mols = list(decoys['ROMol'])
-f.write("Number of Decoys pre-filtering {0}".format(len(mols)))
-f.write("-----------------------------")
+f.write("Number of Decoys pre-filtering {0}\n".format(len(mols)))
+f.write("-----------------------------\n")
 
 # remove macrocycles and molecules that are too big/small
 mac_filtered = macrocycle_filter(mols, ids)
@@ -82,13 +84,13 @@ decoy_mols = size_filtered.mols_new
 decoy_ids = size_filtered.ids_new
 
 # log updated no actives + list of IDs excluded
-f.write("Number of Decoys post filtering {0}".format(len(decoy_mols)))
-f.write("-----------------------------")
+f.write("Number of Decoys post filtering {0}\n".format(len(decoy_mols)))
+f.write("-----------------------------\n")
 
-filtered_ids = list(set(decoy_ids) - set(ids))
+filtered_ids = [i for i in ids if i not in decoy_ids]
 
-f.write("Decoy molecules excluded by size/macrocycle filters: ", filtered_ids)
-f.write("-----------------------------")
+f.write("Decoy molecules excluded by size/macrocycle filters: {0}\n".format(filtered_ids))
+f.write("-----------------------------\n")
 
 # get descriptors
 decoy_descriptors = [get_descriptor(mol) for mol in decoy_mols]
@@ -103,8 +105,8 @@ for i in range(len(decoy_descriptors)):
 
 error_ids = [decoy_ids[i] for i in error_idx]
 if len(error_ids) != 0:
-    f.write("Decoy molecules that raised a Arithmetic/Type error: ", error_ids)
-    f.write("-----------------------------")
+    f.write("Decoy molecules that raised a Arithmetic/Type error: {0}\n".format(error_ids))
+    f.write("-----------------------------\n")
 
 decoy_descriptors = [decoy_descriptors[i] for i in range(len(decoy_descriptors)) if i not in error_idx]
 decoy_ids = [decoy_ids[i] for i in range(len(decoy_ids)) if i not in error_idx]
@@ -137,10 +139,10 @@ for i in range(len(active_descriptors)):
     df_list.append(result)
 
 elapsed = time.time()
-f.write("Run Time: {} ".format(elapsed-start_time))
+f.write("Run Time: {} \n".format(elapsed-start_time))
 f.close()
 
 # save dataframe
 dictionary = dict(zip(active_ids, df_list))
-with open('cxcr4_rgmolsa.pickle', 'wb') as handle:
+with open('adrb2_rgmolsa.pickle', 'wb') as handle:
     pickle.dump(dictionary, handle, protocol=pickle.HIGHEST_PROTOCOL)
