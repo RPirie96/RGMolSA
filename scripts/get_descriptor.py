@@ -67,8 +67,12 @@ def get_descriptor(mol):
 
         except np.linalg.LinAlgError:
 
-            # remove > level 10 spheres
-            new_inputs = cut_10(inputs, error)
+            if levels.no_levels <= 10:
+                # remove > max level-1 spheres
+                new_inputs = cut_10(inputs, error, lev_keep=levels.no_levels-1)
+            else:
+                # remove > level 10 spheres
+                new_inputs = cut_10(inputs, error)
 
             # get base sphere and re-centre on origin
             base = get_base_sphere(new_inputs.centres)
@@ -108,10 +112,7 @@ def get_descriptor(mol):
             # calculate final descriptor
             c_mat = np.matmul(la.inv(a_mat), b_mat)
 
-            try:
-                e_val, e_fun = la.eig(c_mat)
-            except np.linalg.LinAlgError:
-                print(levels)
+            e_val, e_fun = la.eig(c_mat)
 
         e_val = sorted(e_val)
 

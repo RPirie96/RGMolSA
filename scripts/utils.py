@@ -133,9 +133,10 @@ def transform_v2(a, r):
     return transform
 
 
-def cut_10(inputs, error):
+def cut_10(inputs, error, lev_keep=11):
     """
     Function to cut out levels > 10 (removes "crunching" of spheres that triggers LinAlgError)
+    @param lev_keep: default = 11, specified by script for mols with < 10 levels that trigger LinAlgError
     @param inputs:
     @param error:
     @return: updated inputs with > level 10 atoms omitted
@@ -151,7 +152,7 @@ def cut_10(inputs, error):
 
     for sphere in range(0, no_atoms):
         level = sphere_levels_vec[sphere]
-        if level < 11:
+        if level < lev_keep:
             keep.append(1)
         else:
             keep.append(0)
