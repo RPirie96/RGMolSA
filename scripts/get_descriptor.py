@@ -131,3 +131,6 @@ def get_descriptor(mol):
 
     except ArithmeticError:
         return "ArithmeticError"
+
+    except np.linalg.LinAlgError:
+        return "LinAlgError"
