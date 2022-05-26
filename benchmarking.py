@@ -9,16 +9,16 @@ import sys
 sys.path.append('/home/b9046648/RGMolSA/scripts')
 
 from get_descriptor import get_descriptor
-from data_filters import macrocycle_filter, size_filter
+from data_filters import macrocycle_filter, size_filter, neutralize_atoms
 from utils import get_score
 
 # text file to log time and excluded mols
-f = open("adrb2_log.txt", "a")
+f = open("xiap_log.txt", "a")
 
 start_time = time.time()
 
 # import active data from SDF
-actives = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/adrb2/adrb2_actives.sdf')
+actives = PandasTools.LoadSDF('/home/b9046648/dud-e/other/xiap/xiap_actives.sdf')
 actives = actives.drop_duplicates('ID', keep = 'first')
 actives = actives.reset_index(drop=True)
 
@@ -32,6 +32,11 @@ mac_filtered = macrocycle_filter(mols, ids)
 size_filtered = size_filter(mac_filtered.mols_new, mac_filtered.ids_new)
 
 active_mols = size_filtered.mols_new
+
+# neutralise molecules
+for mol in active_mols:
+    neutralize_atoms(mol)
+
 active_ids = size_filtered.ids_new
 
 # log updated no actives + list of IDs excluded
@@ -53,10 +58,14 @@ for i in range(len(active_descriptors)):
         error_idx.append(i)
     if active_descriptors[i] == "ArithmeticError":
         error_idx.append(i)
+    if active_descriptors[i] == "LinAlgError":
+        error_idx.append(i)
+    if active_descriptors[i] == "ValueError":
+        error_idx.append(i)
 
 error_ids = [active_ids[i] for i in error_idx]
 if len(error_ids) != 0:
-    f.write("Active molecules that raised a Arithmetic/Type error: {0}\n".format(error_ids))
+    f.write("Active molecules that raised a Arithmetic/Type/LinAlg/Value error: {0}\n".format(error_ids))
     f.write("-----------------------------\n")
 
 active_descriptors = [active_descriptors[i] for i in range(len(active_descriptors)) if i not in error_idx]
@@ -67,7 +76,7 @@ actives = pd.DataFrame(list(zip(active_ids, active_descriptors)), columns=['ID',
 actives['type'] = True  # label for EF count
 
 # import active data from SDF
-decoys = PandasTools.LoadSDF('/home/b9046648/dud-e/gpcr/adrb2/adrb2_inactives.sdf')
+decoys = PandasTools.LoadSDF('/home/b9046648/dud-e/other/xiap/xiap_inactives.sdf')
 decoys = decoys.drop_duplicates('ID', keep = 'first')
 decoys = decoys.reset_index(drop=True)
 
@@ -81,6 +90,11 @@ mac_filtered = macrocycle_filter(mols, ids)
 size_filtered = size_filter(mac_filtered.mols_new, mac_filtered.ids_new)
 
 decoy_mols = size_filtered.mols_new
+
+# neutralise mols
+for mol in decoy_mols:
+    neutralize_atoms(mol)
+
 decoy_ids = size_filtered.ids_new
 
 # log updated no actives + list of IDs excluded
@@ -102,10 +116,14 @@ for i in range(len(decoy_descriptors)):
         error_idx.append(i)
     if decoy_descriptors[i] == "ArithmeticError":
         error_idx.append(i)
+    if decoy_descriptors[i] == "LinAlgError":
+        error_idx.append(i)
+    if decoy_descriptors[i] == "ValueError":
+        error_idx.append(i)
 
 error_ids = [decoy_ids[i] for i in error_idx]
 if len(error_ids) != 0:
-    f.write("Decoy molecules that raised a Arithmetic/Type error: {0}\n".format(error_ids))
+    f.write("Decoy molecules that raised a Arithmetic/Type/LinAlg/Value error: {0}\n".format(error_ids))
     f.write("-----------------------------\n")
 
 decoy_descriptors = [decoy_descriptors[i] for i in range(len(decoy_descriptors)) if i not in error_idx]
@@ -144,5 +162,5 @@ f.close()  # close log
 
 # save dataframe
 dictionary = dict(zip(active_ids, df_list))
-with open('adrb2_rgmolsa.pickle', 'wb') as handle:
+with open('xiap_rgmolsa.pickle', 'wb') as handle:
     pickle.dump(dictionary, handle, protocol=pickle.HIGHEST_PROTOCOL)

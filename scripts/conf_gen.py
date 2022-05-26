@@ -91,7 +91,10 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
 
         # energy optimise conformers
         mol_props = AllChem.MMFFGetMoleculeProperties(mol, mmffVariant="MMFF94s")
-        AllChem.MMFFOptimizeMoleculeConfs(mol, numThreads=0, mmffVariant="MMFF94s")
+        try:
+            AllChem.MMFFOptimizeMoleculeConfs(mol, numThreads=0, mmffVariant="MMFF94s")
+        except ValueError:
+            continue
 
         if energy_sorted:
             # sort

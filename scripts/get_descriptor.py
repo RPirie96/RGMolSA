@@ -17,7 +17,6 @@ from b_matrix import get_b_mat
 from a_matrix import get_a_mat
 from utils import cut_10
 
-
 def get_descriptor(mol):
     """
     Function to generate shape descriptor for a single molecule
