@@ -133,7 +133,6 @@ dependencies:
     - jupyter-console==6.4
     - jupyterlab-pygments==0.1
     - jupyterlab-widgets==1.0
-    - mistune==0.8
     - nbclient==0.5
     - nbconvert==6.4
     - nbformat==5.2
