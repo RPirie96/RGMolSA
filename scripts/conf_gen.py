@@ -112,6 +112,7 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
             mol = Chem.RemoveHs(mol)
 
             for cid, energy in sorted_res:
+                mol.SetProp("_Name", str(mol_id))
                 mol.SetProp("ID", str(mol_id))
                 mol.SetProp("CID", str(cid))
                 mol.SetProp("Energy", str(energy))
@@ -121,6 +122,7 @@ def embed_multi_3d(mols, ids, filename, no_confs=None, energy_sorted=False):
             # remove Hs
             mol = Chem.RemoveHs(mol)
             for cid in cids:
+                mol.SetProp("_Name", str(mol_id))
                 mol.SetProp("ID", str(mol_id))
                 mol.SetProp("CID", str(cid))
                 w.write(mol, confId=cid)
