@@ -14,7 +14,7 @@ Functions:
 from collections import namedtuple
 import pandas as pd
 from rdkit import Chem
-from rdkit.Chem import Descriptors
+from rdkit.Chem import Descriptors, MolStandardize
 
 
 def macrocycle_filter(mols, ids=None):
@@ -68,7 +68,7 @@ def salt_filter(mols):
     for mol in mols:
         smile = Chem.MolToSmiles(mol)
         if non_bond in smile:  # "non-bond" = "." indicates salt
-            parent_mols.append(Chem.MolStandardize.rdMolStandardize.SuperParent(mol))
+            parent_mols.append(MolStandardize.rdMolStandardize.SuperParent(mol))
         else:
             parent_mols.append(mol)  # if the molecule doesn't have 2 parts add to list
 
