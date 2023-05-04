@@ -38,3 +38,4 @@ The script "example_run.py" is a script to run the method for any dataset. It ta
 - SVT.sdf: structure data file containing a single conformer for each of Sildenafil, Vardenafil and Tadalafil.
 - X_confs_10.sdf: structure data files for Sildenafil, Vardenafil and Tadalafil, each containing 10 low energy conformers generated using RDKit. 
 - X_confs_10random.sdf: structure data files for Sildenafil, Vardenafil and Tadalafil, each containing 10 random conformers generated using RDKit.
+- Arginine.sdf, Diflorasone.sdf, Lymecycline.sdf and S-octylglutathione.sdf: structure data files for the 4 potential decoy molecules considered
