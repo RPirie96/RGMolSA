@@ -279,8 +279,8 @@ def base_error(levels, inputs, base, rescaled):
 
         angle_x = angle_x + 10
 
-    error = namedtuple("error", ["sphere_levels_vec", "next_level", "centres_r"])
+    error = namedtuple("error", ["sphere_levels_vec", "next_level", "centres_r", "angle_x"])
 
     return error(
-        sphere_levels_vec=sphere_levels_vec, next_level=next_level, centres_r=centres_r
+        sphere_levels_vec=sphere_levels_vec, next_level=next_level, centres_r=centres_r, angle_x=angle_x
     )
